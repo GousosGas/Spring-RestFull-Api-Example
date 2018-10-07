@@ -1,5 +1,6 @@
 package com.example.mobileapp.Controllers;
 
+import com.example.mobileapp.Exceptions.UserServiceException;
 import com.example.mobileapp.Model.Request.UserDetailsRequestModel;
 import com.example.mobileapp.Model.Response.ErrorMessages;
 import com.example.mobileapp.Model.Response.UserRest;
@@ -40,7 +41,7 @@ public class UserController {
     {
         UserRest returnValue = new UserRest();
 
-        if(userDetails.getFirstName().isEmpty()) throw new Exception(ErrorMessages.MISSING_REQUIRED_FIELD.getErrorMessage());
+        if(userDetails.getFirstName().isEmpty()) throw new UserServiceException(ErrorMessages.MISSING_REQUIRED_FIELD.getErrorMessage());
 
         UserDto userDto = new UserDto();
         BeanUtils.copyProperties(userDetails,userDto);
