@@ -1,6 +1,8 @@
 package com.example.mobileapp.Services.Impl;
 
 import com.example.mobileapp.Entity.UserEntity;
+import com.example.mobileapp.Exceptions.UserServiceException;
+import com.example.mobileapp.Model.Response.ErrorMessages;
 import com.example.mobileapp.Repositories.UserRepository;
 import com.example.mobileapp.Services.UserService;
 import com.example.mobileapp.Sharred.dto.UserDto;
@@ -64,6 +66,22 @@ public class UserServiceImpl implements UserService {
         UserEntity userEntity = userRepository.findUserEntityByUserId(userId);
         if(userEntity == null) throw new UsernameNotFoundException(userId);
         BeanUtils.copyProperties(userEntity,returnValue);
+
+        return returnValue;
+    }
+
+    @Override
+    public UserDto updateUser(String userId, UserDto user) {
+        UserDto returnValue = new UserDto();
+        UserEntity userEntity = userRepository.findUserEntityByUserId(userId);
+
+        if(userEntity == null) throw new UserServiceException(ErrorMessages.NO_RECORD_FOUND.getErrorMessage());
+        BeanUtils.copyProperties(userEntity,returnValue);
+        userEntity.setFirstName(user.getFirstName());
+        userEntity.setLastName(user.getLastName());
+
+        UserEntity updatedUserDetails = userRepository.save(userEntity);
+        BeanUtils.copyProperties(updatedUserDetails,returnValue);
 
         return returnValue;
     }
