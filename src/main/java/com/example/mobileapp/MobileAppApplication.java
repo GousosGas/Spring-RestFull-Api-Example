@@ -9,6 +9,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 public class MobileAppApplication {
 
 	public static void main(String[] args) {
+
 		SpringApplication.run(MobileAppApplication.class, args);
 	}
 
@@ -16,4 +17,10 @@ public class MobileAppApplication {
 	public BCryptPasswordEncoder bCryptPasswordEncoder(){
 		return new BCryptPasswordEncoder();
 	}
+
+	@Bean
+	public SpringApplicationContext springApplicationContext(){
+		return new SpringApplicationContext();
+	}
+
 }
