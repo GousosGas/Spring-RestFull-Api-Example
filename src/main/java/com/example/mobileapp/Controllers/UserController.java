@@ -1,6 +1,7 @@
 package com.example.mobileapp.Controllers;
 
 import com.example.mobileapp.Model.Request.UserDetailsRequestModel;
+import com.example.mobileapp.Model.Response.ErrorMessages;
 import com.example.mobileapp.Model.Response.UserRest;
 import com.example.mobileapp.Services.UserService;
 import com.example.mobileapp.Sharred.dto.UserDto;
@@ -35,9 +36,12 @@ public class UserController {
     @PostMapping(
             consumes = {MediaType.APPLICATION_XML_VALUE,MediaType.APPLICATION_JSON_VALUE},
             produces = {MediaType.APPLICATION_XML_VALUE,MediaType.APPLICATION_JSON_VALUE})
-    public UserRest createUser(@RequestBody UserDetailsRequestModel userDetails)
+    public UserRest createUser(@RequestBody UserDetailsRequestModel userDetails) throws Exception
     {
         UserRest returnValue = new UserRest();
+
+        if(userDetails.getFirstName().isEmpty()) throw new Exception(ErrorMessages.MISSING_REQUIRED_FIELD.getErrorMessage());
+
         UserDto userDto = new UserDto();
         BeanUtils.copyProperties(userDetails,userDto);
         UserDto createdUser = userService.createUser(userDto);
