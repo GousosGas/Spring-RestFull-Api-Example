@@ -31,12 +31,12 @@ public class AuthorizationFilter extends BasicAuthenticationFilter{
             return;
         }
 
-        UsernamePasswordAuthenticationToken authentication = getAuthedication(request);
+        UsernamePasswordAuthenticationToken authentication = getAuthentication(request);
         SecurityContextHolder.getContext().setAuthentication(authentication);
         chain.doFilter(request,response);
     }
 
-    private UsernamePasswordAuthenticationToken getAuthedication(HttpServletRequest request){
+    private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request){
         String token = request.getHeader(SecurityConstants.HEADER_STRING);
         if(token != null){
             token = token.replace(SecurityConstants.TOKEN_PREFIX,"");
