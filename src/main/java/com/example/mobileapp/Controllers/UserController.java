@@ -1,8 +1,9 @@
 package com.example.mobileapp.Controllers;
 
-import com.example.mobileapp.Exceptions.UserServiceException;
 import com.example.mobileapp.Model.Request.UserDetailsRequestModel;
-import com.example.mobileapp.Model.Response.ErrorMessages;
+import com.example.mobileapp.Model.Response.OperationStatusModel;
+import com.example.mobileapp.Model.Response.RequestOperationName;
+import com.example.mobileapp.Model.Response.RequestOperationStatus;
 import com.example.mobileapp.Model.Response.UserRest;
 import com.example.mobileapp.Services.UserService;
 import com.example.mobileapp.Sharred.dto.UserDto;
@@ -66,8 +67,15 @@ public class UserController {
         return returnValue;
     }
 
-    @DeleteMapping
-    public String deleteUser(){
-        return "delete user was called";
+    @DeleteMapping(path = "/{id}",
+            consumes = {MediaType.APPLICATION_XML_VALUE,MediaType.APPLICATION_JSON_VALUE},
+            produces = {MediaType.APPLICATION_XML_VALUE,MediaType.APPLICATION_JSON_VALUE})
+
+    public OperationStatusModel deleteUser(@PathVariable String id){
+        OperationStatusModel returnValue = new OperationStatusModel();
+        returnValue.setOperationName(RequestOperationName.DELETE.name());
+        userService.deleteUser(id);
+        returnValue.setOperationResult(RequestOperationStatus.SUCCESS.name());
+        return returnValue;
     }
 }
