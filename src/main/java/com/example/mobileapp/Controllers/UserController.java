@@ -12,6 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @RestController
 @RequestMapping("users")
 public class UserController {
@@ -27,6 +30,23 @@ public class UserController {
         BeanUtils.copyProperties(userDto,returnValue);
         return returnValue;
     }
+
+    @GetMapping(produces = {MediaType.APPLICATION_XML_VALUE,MediaType.APPLICATION_JSON_VALUE})
+    public List<UserRest> getUsers(@RequestParam(value="page",defaultValue = "1") int page,
+                                   @RequestParam(value="limit",defaultValue = "25") int limit){
+        List<UserRest> returnValue = new ArrayList<>();
+
+        List<UserDto> users = userService.getUsers(page,limit);
+
+        for(UserDto userDto:users){
+            UserRest userModel = new UserRest();
+            BeanUtils.copyProperties(userDto,userModel);
+            returnValue.add(userModel);
+        }
+
+        return  returnValue;
+    }
+
 
     /***
      * We send a post call to create
@@ -78,4 +98,6 @@ public class UserController {
         returnValue.setOperationResult(RequestOperationStatus.SUCCESS.name());
         return returnValue;
     }
+
+
 }
