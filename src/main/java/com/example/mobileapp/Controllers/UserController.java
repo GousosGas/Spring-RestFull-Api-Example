@@ -32,7 +32,7 @@ public class UserController {
     }
 
     @GetMapping(produces = {MediaType.APPLICATION_XML_VALUE,MediaType.APPLICATION_JSON_VALUE})
-    public List<UserRest> getUsers(@RequestParam(value="page",defaultValue = "1") int page,
+    public List<UserRest> getUsers(@RequestParam(value="page",defaultValue = "0") int page,
                                    @RequestParam(value="limit",defaultValue = "25") int limit){
         List<UserRest> returnValue = new ArrayList<>();
 
@@ -58,12 +58,10 @@ public class UserController {
     @PostMapping(
             consumes = {MediaType.APPLICATION_XML_VALUE,MediaType.APPLICATION_JSON_VALUE},
             produces = {MediaType.APPLICATION_XML_VALUE,MediaType.APPLICATION_JSON_VALUE})
-    public UserRest createUser(@RequestBody UserDetailsRequestModel userDetails) throws Exception
+    public UserRest createUser(@RequestBody UserDetailsRequestModel userDetails)
+            throws Exception
     {
         UserRest returnValue = new UserRest();
-
-        //if(userDetails.getFirstName().isEmpty()) throw new UserServiceException(ErrorMessages.MISSING_REQUIRED_FIELD.getErrorMessage());
-
         UserDto userDto = new UserDto();
         BeanUtils.copyProperties(userDetails,userDto);
         UserDto createdUser = userService.createUser(userDto);
