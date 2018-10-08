@@ -7,6 +7,7 @@ import com.example.mobileapp.Model.Response.RequestOperationStatus;
 import com.example.mobileapp.Model.Response.UserRest;
 import com.example.mobileapp.Services.UserService;
 import com.example.mobileapp.Sharred.dto.UserDto;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -62,8 +63,15 @@ public class UserController {
             throws Exception
     {
         UserRest returnValue = new UserRest();
-        UserDto userDto = new UserDto();
-        BeanUtils.copyProperties(userDetails,userDto);
+
+
+        //UserDto userDto = new UserDto();
+        //BeanUtils.copyProperties(userDetails,userDto);
+
+        ModelMapper modelMapper = new ModelMapper();
+        UserDto userDto = modelMapper.map(userDetails,UserDto.class);
+
+
         UserDto createdUser = userService.createUser(userDto);
         BeanUtils.copyProperties(createdUser,returnValue);
 
