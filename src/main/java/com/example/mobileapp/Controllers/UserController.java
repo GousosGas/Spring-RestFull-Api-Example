@@ -62,18 +62,12 @@ public class UserController {
     public UserRest createUser(@RequestBody UserDetailsRequestModel userDetails)
             throws Exception
     {
-        UserRest returnValue = new UserRest();
-
-
-        //UserDto userDto = new UserDto();
-        //BeanUtils.copyProperties(userDetails,userDto);
-
+        UserRest returnValue;
         ModelMapper modelMapper = new ModelMapper();
         UserDto userDto = modelMapper.map(userDetails,UserDto.class);
 
-
         UserDto createdUser = userService.createUser(userDto);
-        BeanUtils.copyProperties(createdUser,returnValue);
+        returnValue =  modelMapper.map(createdUser,UserRest.class);
 
         return returnValue;
     }

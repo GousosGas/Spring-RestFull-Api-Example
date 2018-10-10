@@ -29,7 +29,7 @@ public class UserEntity implements Serializable {
     @Column(nullable = false, columnDefinition = "boolean default false")
     private boolean emailVerificationStatus;
 
-    @OneToMany(mappedBy = "usersDetails",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "userDetails",cascade = CascadeType.ALL)
     private List<AddressEntity> addresses;
 
     public long getId() {
