@@ -52,7 +52,12 @@ public class UserServiceImpl implements UserService {
         String publicUserId = utils.generateUserID(30);
         userEntity.setUserId(publicUserId);
         userEntity.setEncryptedPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        userEntity.setEmailVerificationToken(utils.generateUserVerificationToken(publicUserId));
+        userEntity.setEmailVerificationStatus(false);
         UserEntity storedUserDetails = userRepository.save(userEntity);
+
+
+
         UserDto returnValue = modelMapper.map(storedUserDetails,UserDto.class);
 
         return returnValue;
@@ -124,11 +129,40 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public boolean verifyEmailToken(String token) {
+        boolean returnValue = false;
+
+        UserEntity userEntity = userRepository.findUserEntityByEmailVerificationToken(token);
+
+        if(userEntity !=null){
+            boolean hastokenExpired = Utils.hasTokenExpired(token);
+            if(!hastokenExpired){
+                userEntity.setEmailVerificationToken(null);
+                userEntity.setEmailVerificationStatus(Boolean.TRUE);
+                userRepository.save(userEntity);
+                returnValue = true;
+            }
+        }
+
+
+        return returnValue;
+    }
+
+    @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 
         UserEntity userEntity = userRepository.findUserEntityByEmail(email);
         if(userEntity == null) throw new UsernameNotFoundException(email);
 
-        return new User(userEntity.getEmail(),userEntity.getEncryptedPassword(),new ArrayList<>());
+        return new User(userEntity.getEmail(),
+                userEntity.getEncryptedPassword(),
+                userEntity.isEmailVerificationStatus(),
+                true,
+                true,
+                true,
+                new ArrayList<>());
+        //return new User(userEntity.getEmail(),userEntity.getEncryptedPassword(),new ArrayList<>());
     }
+
+
 }

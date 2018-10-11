@@ -77,7 +77,6 @@ public class UserController {
         UserRest returnValue;
         ModelMapper modelMapper = new ModelMapper();
         UserDto userDto = modelMapper.map(userDetails,UserDto.class);
-
         UserDto createdUser = userService.createUser(userDto);
         returnValue =  modelMapper.map(createdUser,UserRest.class);
 
@@ -138,7 +137,9 @@ public class UserController {
         return new Resources<>(addressesListRestModel);
     }
 
-    @GetMapping(path="/{userId}/addresses/{addressId}",produces = {MediaType.APPLICATION_XML_VALUE,MediaType.APPLICATION_JSON_VALUE})
+    @GetMapping(path="/{userId}/addresses/{addressId}",
+            produces = {MediaType.APPLICATION_XML_VALUE,
+                    MediaType.APPLICATION_JSON_VALUE})
     public Resource<AddressRest> getUserAddress(@PathVariable String addressId,
                                                @PathVariable String userId){
 
@@ -162,6 +163,24 @@ public class UserController {
       addressRest.add(userLink);
 
       return new Resource<>(addressRest);
+    }
+
+    @GetMapping(path = "/email-verification",
+            produces = {MediaType.APPLICATION_XML_VALUE,
+                    MediaType.APPLICATION_JSON_VALUE})
+    public OperationStatusModel verifyEmailToken(@RequestParam (value = "token")String token){
+        OperationStatusModel returnValue = new OperationStatusModel();
+        returnValue.setOperationName(RequestOperationName.VERIFY_EMAIL.name());
+
+        boolean isVerified = userService.verifyEmailToken(token);
+
+        if(isVerified){
+            returnValue.setOperationResult(RequestOperationStatus.SUCCESS.name());
+        }else{
+            returnValue.setOperationResult(RequestOperationStatus.ERROR.name());
+        }
+
+        return returnValue;
     }
 
 
